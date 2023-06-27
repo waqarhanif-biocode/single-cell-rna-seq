@@ -20,12 +20,27 @@ While the focus of these guidelines lies on analyzing a prostate cancer dataset 
 The guidelines provide a comprehensive workflow for single-cell RNA sequencing (scRNA-seq) analysis using R. The main steps covered in these guidelines are as follows:
 
 # Data Retrieval
-Obtain scRNA-seq expression profiles from the NCBI GEO repository using the accession ID GSE153892.
+Obtain scRNA-seq expression profiles from the NCBI GEO repository using the accession ID GSE153892. You can use ArrayExpression, EMBL-ENA or any other database for scRNA-seq datasets.
 
-To download the data, use wget
+To download the data, use wget.
+## For example: 
+' wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR121/088/SRR12159588/SRR12159588_1.fastq.gz '
+
+This is for just the forward reads, you have to download the reverse reads for each sample as well. It's better if you write a script that can take all the FTP links in a text document and download each using wget through BASH script that can automate the task for you. 
 
 # Mapping of the Raw Reads
+The files we downloaded previously are FASTQ files and mean nothing without mapping/aligning to the reference genome, in our case which is Homo sapiens reference genome. To obtain a reference genome of the species that you are working on, you can obtain it from NCBI Genomes, ENSEMBL FTP or UCSC Genome Browser. I typically download it from ENSEMBL FTP. 
+
+Base link: https://www.ensembl.org/info/data/ftp/index.html?redirect=no
+For Humans: https://ftp.ensembl.org/pub/release-109/fasta/homo_sapiens/dna/
+
+### Note: make sure that you download the file with "primary assembly" in the file name. 
+
+Alignment plays a crucial role in identifying the origin of reads or fragments by determining where they align best on the reference genome. This process helps us quantify the number of reads that align to specific positions, which enables the creation of a gene x cell count matrix.
+
 Utilize the STAR splice-aware aligner and its submodule solo to map the raw FASTQ files. Adjust various parameters during the mapping process.
+
+
 
 # Count Matrix Generation
 Identify valid barcodes as cells and count Unique Molecular Identifiers (UMIs) mapped to each cell.
