@@ -24,15 +24,15 @@ Obtain scRNA-seq expression profiles from the NCBI GEO repository using the acce
 
 To download the data, use wget.
 ## For example: 
-' wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR121/088/SRR12159588/SRR12159588_1.fastq.gz '
+'wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR121/088/SRR12159588/SRR12159588_1.fastq.gz'
 
 This is for just the forward reads, you have to download the reverse reads for each sample as well. It's better if you write a script that can take all the FTP links in a text document and download each using wget through BASH script that can automate the task for you. 
 
 # Mapping of the Raw Reads
 The files we downloaded previously are FASTQ files and mean nothing without mapping/aligning to the reference genome, in our case which is Homo sapiens reference genome. To obtain a reference genome of the species that you are working on, you can obtain it from NCBI Genomes, ENSEMBL FTP or UCSC Genome Browser. I typically download it from ENSEMBL FTP. 
 
-Base link: https://www.ensembl.org/info/data/ftp/index.html?redirect=no
-For Humans: https://ftp.ensembl.org/pub/release-109/fasta/homo_sapiens/dna/
+- Base link: https://www.ensembl.org/info/data/ftp/index.html?redirect=no
+- For Humans: https://ftp.ensembl.org/pub/release-109/fasta/homo_sapiens/dna/
 
 ### Note: make sure that you download the file with "primary assembly" in the file name. 
 
