@@ -1,15 +1,14 @@
-# single-cell-genomics-r
-### Single-Cell RNA-seq Analysis
+# Single-Cell RNA-seq Analysis
 Comprehensive guidelines for conducting single-cell RNA-seq analysis using R
 
-# Focus
+# Focus of the Study
 This investigation centered on the discernment of anomalous cellular and molecular attributes within immune cells present in the tumor microenvironment of prostate cancer. The scrutiny of immune cells was primarily directed at conducting differential expression analysis, aiming to delineate the contrasting behaviors—namely, pro-tumor and anti-tumor—exhibited by these cells. This analytical pursuit encompassed the examination of intercellular communication pathways, reciprocal cell signaling, inflammatory responses, and other pertinent factors.
 
-# These guidelines have been authored by Waqar Hanif.
+# These guidelines have been authored by Waqar Hanif, Founder/CEO BioCode.
 LinkedIn: https://www.linkedin.com/in/waqarhanif/
 Contact: waqar@biocode.org.uk or ai_waqarhanif@outlook.com
 
-These guidelines assume a foundational understanding of molecular biology and familiarity with single-cell RNA-sequencing technologies. 
+These guidelines assume a foundational understanding of molecular biology and a basic familiarity with single-cell RNA-sequencing technologies. 
 
 # Requirements: 
 - At least 16 GB RAM
@@ -84,6 +83,7 @@ Actual scRNA-seq analysis is conducted on R language using Seurat (there are oth
 
 ### Installation:
 Download RStudio: https://posit.co/download/rstudio-desktop/
+
 Download R: https://cran.r-project.org/bin/windows/base/
 ### Required packages:
 library(Seurat)
@@ -129,12 +129,13 @@ pc[["percent.mt"]] <- PercentageFeatureSet(pc, pattern = "^MT-")
 vln_plot2 <- VlnPlot(pc, features = c("percent.mt"), ncol = 1)
 ggsave("percent_mt.png", vln_plot2, dpi = 600)
 
-### filtering dead cells out, highly expressive cells and lowly expressive cells are being filtered out
-### nFeature_RNA is the number of genes detected in each cell. 
-### nCount_RNA is the total number of molecules detected within a cell. 
-### Low nFeature_RNA for a cell indicates that it may be dead/dying or an empty droplet. 
-### High nCount_RNA and/or nFeature_RNA indicates that the "cell" may in fact be a doublet (or multiplet). 
-### In combination with %mitochondrial reads, removing outliers from these groups removes most doublets/dead cells/empty droplets, hence why filtering is a common pre-processing step.
+### Details
+Filtering dead cells out, highly expressive cells and lowly expressive cells are being filtered out
+nFeature_RNA is the number of genes detected in each cell. 
+nCount_RNA is the total number of molecules detected within a cell. 
+Low nFeature_RNA for a cell indicates that it may be dead/dying or an empty droplet. 
+High nCount_RNA and/or nFeature_RNA indicates that the "cell" may in fact be a doublet (or multiplet). 
+In combination with %mitochondrial reads, removing outliers from these groups removes most doublets/dead cells/empty droplets, hence why filtering is a common pre-processing step.
 
 pc = subset(pc, subset = nFeature_RNA > 200 & 
                            nFeature_RNA < 6000 & nCount_RNA > 1000 & percent.mt < 10)
@@ -544,3 +545,10 @@ groups_to_remove <- c("Basophils", "Plasmacytoid Dendritic cells", "Cancer cells
 subset_pc <- subset(pc, subset = !(Idents(seurat_obj) %in% groups_to_remove))
 
 pc_subset <- pc[, !(pc@meta.data$customclassif %in% groups_to_remove)]
+
+To learn and become an expert in scRNA-seq analysis using Linux, R and Python (step-by-step hands-on analysis): 
+- With Python: https://www.biocode.org.uk/courses/hands-on-single-cell-rna-sequencing-data-analysis-using-python-complete-training/
+- With Linux & R: https://www.biocode.org.uk/courses/hands-on-single-cell-rna-sequencing/
+Some of our lectures are given for free at our YouTube channel: https://www.youtube.com/results?search_query=biocode+single+cell
+
+The course is designed, delivered and taught by: Waqar Hanif (https://www.linkedin.com/in/waqarhanif/)
