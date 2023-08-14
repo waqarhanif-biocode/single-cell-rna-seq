@@ -23,26 +23,45 @@ The guidelines provide a comprehensive workflow for single-cell RNA sequencing (
 Obtain scRNA-seq expression profiles from the NCBI GEO repository using the accession ID GSE153892. You can use ArrayExpression, EMBL-ENA or any other database for scRNA-seq datasets.
 
 To download the data, use wget.
-## For example: 
-'wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR121/088/SRR12159588/SRR12159588_1.fastq.gz'
+### For example: 
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR121/088/SRR12159588/SRR12159588_1.fastq.gz
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR121/088/SRR12159588/SRR12159588_2.fastq.gz
 
 This is for just the forward reads, you have to download the reverse reads for each sample as well. It's better if you write a script that can take all the FTP links in a text document and download each using wget through BASH script that can automate the task for you. 
 
-# Mapping of the Raw Reads
+# Mapping of the Raw Reads & Count Matrix Generation (UMI Collapsing)
 The files we downloaded previously are FASTQ files and mean nothing without mapping/aligning to the reference genome, in our case which is Homo sapiens reference genome. To obtain a reference genome of the species that you are working on, you can obtain it from NCBI Genomes, ENSEMBL FTP or UCSC Genome Browser. I typically download it from ENSEMBL FTP. 
 
 - Base link: https://www.ensembl.org/info/data/ftp/index.html?redirect=no
 - For Humans: https://ftp.ensembl.org/pub/release-109/fasta/homo_sapiens/dna/
+- Exact link: https://ftp.ensembl.org/pub/release-109/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+
+Run: wget https://ftp.ensembl.org/pub/release-109/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+For reference annotation (Required for indexing, see below)
+wget https://ftp.ensembl.org/pub/release-109/gtf/homo_sapiens/Homo_sapiens.GRCh38.109.gtf.gz
+
 
 ### Note: make sure that you download the file with "primary assembly" in the file name. 
 
-Alignment plays a crucial role in identifying the origin of reads or fragments by determining where they align best on the reference genome. This process helps us quantify the number of reads that align to specific positions, which enables the creation of a gene x cell count matrix.
+### For alignment, we will use STAR aligner and its submodule solo.
+Installation: sudo apt install STAR
+Or, you can install through Anaconda: conda install -c bioconda star
 
-Utilize the STAR splice-aware aligner and its submodule solo to map the raw FASTQ files. Adjust various parameters during the mapping process.
+Before proceeding with the alignment, we need to generated a reference index (imagine Table of Contents of an entire genome) for efficient mapping of millions of reads against a large genome.
 
+## Building an Index:
 
+Unzip the files: 
+gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+gunzip Homo_sapiens.GRCh38.109.gtf.gz
 
-# Count Matrix Generation
+Generate index: (will take lots of time and compute resourses, be patient)
+STAR --runThreadN 12 --runMode genomeGenerate --genomeDir index --genomeFastaFiles Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz --sjdbGTFfile Homo_sapiens.GRCh38.109.gtf.gz
+
+Alignment plays a crucial role in identifying the origin of reads or fragments by determining where they align best on the reference genome. This process helps us quantify the number of reads that align to specific positions, which enables the creation of a gene x cell count matrix.  
+
+Adjust various parameters during the mapping process.
+
 Identify valid barcodes as cells and count Unique Molecular Identifiers (UMIs) mapped to each cell.
 Generate a sparse matrix format count matrix (cell x gene) to represent gene expression.
 
